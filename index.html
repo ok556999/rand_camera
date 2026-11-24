@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random camera</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn-clear {
+            background-color: #e74c3c;
+        }
+
+        .btn-clear:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-random {
+            background-color: #2ecc71;
+        }
+
+        .btn-random:hover {
+            background-color: #27ae60;
+        }
+
+        .list-container {
+            list-style: none;
+            padding: 0;
+        }
+
+        .item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Random camera</h1>
+
+        <!-- Section 2: Camera Input -->
+        <h2>Camera :</h2>
+        <div class="input-group">
+            <input type="text" id="camera_textbox" placeholder="Enter camera name...">
+            <button id="add_camera_button">Add Camera</button>
+        </div>
+
+        <!-- Section 3: Camera List -->
+        <h2>Camera list</h2>
+        <ul id="camera_list" class="list-container"></ul>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <!-- Section 4: Lens Input -->
+        <h2>Lens :</h2>
+        <div class="input-group">
+            <input type="text" id="lens_textbox" placeholder="Enter lens name...">
+            <button id="add_lens_button">Add Lens</button>
+        </div>
+
+        <!-- Section 5: Lens List -->
+        <h2>Lens list</h2>
+        <ul id="lens_list" class="list-container"></ul>
+
+        <!-- Section 6 & 7: Control Buttons -->
+        <div class="button-group">
+            <button id="clear_button" class="btn-clear">Clear All</button>
+            <button id="random_button" class="btn-random">Randomize</button>
+        </div>
+    </div>
+
+    <script>
+        // Select elements for Camera
+        const cameraTextbox = document.getElementById('camera_textbox');
+        const addCameraButton = document.getElementById('add_camera_button');
+        const cameraList = document.getElementById('camera_list');
+
+        // Select elements for Lens
+        const lensTextbox = document.getElementById('lens_textbox');
+        const addLensButton = document.getElementById('add_lens_button');
+        const lensList = document.getElementById('lens_list');
+
+        // Select control buttons
+        const clearButton = document.getElementById('clear_button');
+        const randomButton = document.getElementById('random_button');
+
+        // Helper to get list items as an array of text values
+        function getListValues(listElement) {
+            const items = listElement.querySelectorAll('.item span');
+            return Array.from(items).map(span => span.textContent);
+        }
+
+        // Generic function to add items to a list
+        function addItemToList(inputValue, listElement, inputElement) {
+            const textValue = inputValue.trim();
+
+            if (textValue === "") {
+                alert("Please enter a value.");
+                return;
+            }
+
+            const li = document.createElement('li');
+            li.className = 'item';
+
+            const textSpan = document.createElement('span');
+            textSpan.textContent = textValue;
+
+            li.appendChild(textSpan);
+            listElement.appendChild(li);
+
+            inputElement.value = "";
+            inputElement.focus();
+        }
+
+        // Event listeners for Camera
+        addCameraButton.addEventListener('click', () => {
+            addItemToList(cameraTextbox.value, cameraList, cameraTextbox);
+        });
+
+        cameraTextbox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addItemToList(cameraTextbox.value, cameraList, cameraTextbox);
+        });
+
+        // Event listeners for Lens
+        addLensButton.addEventListener('click', () => {
+            addItemToList(lensTextbox.value, lensList, lensTextbox);
+        });
+
+        lensTextbox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addItemToList(lensTextbox.value, lensList, lensTextbox);
+        });
+
+        // Section 6: Clear functionality
+        clearButton.addEventListener('click', () => {
+            if (confirm("Are you sure you want to clear all lists?")) {
+                cameraList.innerHTML = "";
+                lensList.innerHTML = "";
+            }
+        });
+
+        // Section 7: Random functionality
+        randomButton.addEventListener('click', () => {
+            const cameras = getListValues(cameraList);
+            const lenses = getListValues(lensList);
+
+            if (cameras.length === 0 || lenses.length === 0) {
+                alert("Please add at least one camera and one lens to the lists first!");
+                return;
+            }
+
+            const randomCamera = cameras[Math.floor(Math.random() * cameras.length)];
+            const randomLens = lenses[Math.floor(Math.random() * lenses.length)];
+
+            alert(`Random Selection:\n\nCamera: ${randomCamera}\nLens: ${randomLens}`);
+        });
+    </script>
+
+</body>
+
+</html>
